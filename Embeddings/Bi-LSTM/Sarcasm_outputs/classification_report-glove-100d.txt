@@ -1,0 +1,9 @@
+Reddit Sarcasm Classification Report:
+               precision    recall  f1-score   support
+
+Non-Sarcastic       0.68      0.76      0.72     14979
+    Sarcastic       0.73      0.64      0.68     15021
+
+     accuracy                           0.70     30000
+    macro avg       0.71      0.70      0.70     30000
+ weighted avg       0.71      0.70      0.70     30000

@@ -1,0 +1,9 @@
+Bi-LSTM Classification Report:
+               precision    recall  f1-score   support
+
+Non-Sarcastic       0.69      0.70      0.70     10001
+    Sarcastic       0.70      0.69      0.69      9999
+
+     accuracy                           0.70     20000
+    macro avg       0.70      0.70      0.70     20000
+ weighted avg       0.70      0.70      0.70     20000
