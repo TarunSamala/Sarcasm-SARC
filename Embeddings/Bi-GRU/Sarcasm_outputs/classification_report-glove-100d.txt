@@ -1,0 +1,9 @@
+Bi-GRU with GloVe on 1M Comments Classification Report:
+               precision    recall  f1-score   support
+
+Non-Sarcastic       0.70      0.79      0.74    100019
+    Sarcastic       0.76      0.67      0.71     99981
+
+     accuracy                           0.73    200000
+    macro avg       0.73      0.73      0.73    200000
+ weighted avg       0.73      0.73      0.73    200000

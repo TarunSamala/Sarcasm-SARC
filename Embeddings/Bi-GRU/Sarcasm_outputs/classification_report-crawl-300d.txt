@@ -1,0 +1,9 @@
+Bi-GRU with crawl-300d-2M.vec Classification Report:
+               precision    recall  f1-score   support
+
+Non-Sarcastic       0.70      0.78      0.74    100019
+    Sarcastic       0.75      0.67      0.71     99981
+
+     accuracy                           0.72    200000
+    macro avg       0.73      0.72      0.72    200000
+ weighted avg       0.73      0.72      0.72    200000
