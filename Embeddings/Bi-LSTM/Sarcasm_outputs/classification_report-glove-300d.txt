@@ -1,8 +1,9 @@
+BiLSTM with glove.840B.300d.pkl Classification Report:
                precision    recall  f1-score   support
 
-Non-Sarcastic       0.69      0.75      0.72     10001
-    Sarcastic       0.73      0.67      0.70      9999
+Non-Sarcastic       0.70      0.77      0.73    100019
+    Sarcastic       0.74      0.68      0.71     99981
 
-     accuracy                           0.71     20000
-    macro avg       0.71      0.71      0.71     20000
- weighted avg       0.71      0.71      0.71     20000
+     accuracy                           0.72    200000
+    macro avg       0.72      0.72      0.72    200000
+ weighted avg       0.72      0.72      0.72    200000
