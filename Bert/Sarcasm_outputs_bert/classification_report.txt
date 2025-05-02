@@ -1,8 +1,8 @@
 DistilBERT Classification Report:
                precision    recall  f1-score   support
 
-Non-Sarcastic       0.72      0.71      0.72     10001
-    Sarcastic       0.71      0.73      0.72      9999
+Non-Sarcastic       0.72      0.72      0.72     10001
+    Sarcastic       0.72      0.71      0.72      9999
 
      accuracy                           0.72     20000
     macro avg       0.72      0.72      0.72     20000

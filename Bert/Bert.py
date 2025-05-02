@@ -3,31 +3,30 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 import re
-from transformers import DistilBertTokenizer, TFDistilBertForSequenceClassification
+from transformers import DistilBertTokenizer, TFDistilBertForSequenceClassification, DistilBertConfig
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 from sklearn.metrics import classification_report, confusion_matrix
 import seaborn as sns
+from sklearn.utils.class_weight import compute_class_weight
 
 # Configuration
-MAX_LEN = 50  # Matches Bi-LSTM setup
-BATCH_SIZE = 16 # Reduced for BERT memory requirements
-EPOCHS = 6      # Fewer epochs needed for BERT
+MAX_LEN = 50
+BATCH_SIZE = 16
+EPOCHS = 6
 OUTPUT_DIR = "Sarcasm_outputs_bert"
 MODEL_NAME = "distilbert-base-uncased"
 
 # Create output directory
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# Text cleaning (same as Bi-LSTM)
 def clean_text(text):
     text = str(text).lower()
     text = re.sub(r'[^a-zA-z\s]', '', text)
     text = re.sub(r'\s+', ' ', text).strip()
     return text
 
-# Load data (same as Bi-LSTM)
 def load_data(file_path, sample_size=100000):
     df = pd.read_csv(file_path, usecols=['label', 'comment'])
     df = df.dropna(subset=['comment'])
@@ -45,16 +44,22 @@ train_texts, test_texts, train_labels, test_labels = train_test_split(
     stratify=df['label']
 )
 
+# Class weight balancing
+classes = np.unique(train_labels)
+class_weights = compute_class_weight('balanced', classes=classes, y=train_labels)
+class_weights = np.clip(class_weights, 0.5, 2)  # Limit extreme weights
+class_weights_dict = dict(zip(classes, class_weights))
+sample_weights = np.array([class_weights_dict[label] for label in train_labels])
+
 # Initialize BERT tokenizer
 tokenizer = DistilBertTokenizer.from_pretrained(MODEL_NAME)
 
-# Tokenization function
 def encode_texts(texts):
     return tokenizer(
         texts.tolist(),
         max_length=MAX_LEN,
         truncation=True,
-        padding='max_length',
+        padding=True,  # Dynamic padding
         return_tensors='tf'
     )
 
@@ -62,13 +67,14 @@ def encode_texts(texts):
 train_encodings = encode_texts(train_texts)
 test_encodings = encode_texts(test_texts)
 
-# Create TensorFlow datasets
+# Create TensorFlow datasets with sample weights
 train_dataset = tf.data.Dataset.from_tensor_slices((
     {
         'input_ids': train_encodings['input_ids'],
         'attention_mask': train_encodings['attention_mask']
     },
-    np.array(train_labels)
+    np.array(train_labels),
+    sample_weights
 )).shuffle(1000).batch(BATCH_SIZE).prefetch(tf.data.AUTOTUNE)
 
 test_dataset = tf.data.Dataset.from_tensor_slices((
@@ -79,38 +85,45 @@ test_dataset = tf.data.Dataset.from_tensor_slices((
     np.array(test_labels)
 )).batch(BATCH_SIZE).prefetch(tf.data.AUTOTUNE)
 
-# Enhanced DistilBERT model
+# Enhanced DistilBERT model with regularization
 def build_bert_model():
-    model = TFDistilBertForSequenceClassification.from_pretrained(
+    config = DistilBertConfig.from_pretrained(
         MODEL_NAME,
         num_labels=1,
-        dropout=0.3,
-        attention_dropout=0.2
+        dropout=0.4,  # Increased dropout
+        attention_dropout=0.3,  # Increased attention dropout
+        seq_classif_dropout=0.5
     )
     
-    # Custom classifier with regularization
+    model = TFDistilBertForSequenceClassification.from_pretrained(MODEL_NAME, config=config)
+    
+    # Enhanced classifier with regularization
+    l2_reg = tf.keras.regularizers.l2(0.02)
     model.classifier = tf.keras.Sequential([
-        tf.keras.layers.Dropout(0.4),
+        tf.keras.layers.Dropout(0.5),
         tf.keras.layers.Dense(64, activation='relu',
-                            kernel_regularizer=tf.keras.regularizers.l2(1e-4)),
-        tf.keras.layers.Dropout(0.3),
-        tf.keras.layers.Dense(1, activation='sigmoid')
+                            kernel_regularizer=l2_reg,
+                            activity_regularizer=l2_reg),
+        tf.keras.layers.Dropout(0.4),
+        tf.keras.layers.Dense(1, activation='sigmoid',
+                            kernel_regularizer=l2_reg)
     ])
     
-    optimizer = tf.keras.optimizers.Adam(learning_rate=3e-5)
-    loss = tf.keras.losses.BinaryCrossentropy()
-    
-    model.compile(
-        optimizer=optimizer,
-        loss=loss,
-        metrics=['accuracy']
+    # Optimized optimizer with weight decay
+    optimizer = tf.keras.optimizers.AdamW(
+        learning_rate=2e-5,
+        weight_decay=0.03,
+        clipnorm=1.0  # Gradient clipping
     )
+    
+    loss = tf.keras.losses.BinaryCrossentropy()
+    model.compile(optimizer=optimizer, loss=loss, metrics=['accuracy'])
     return model
 
-# Callbacks
+# Enhanced callbacks
 callbacks = [
-    EarlyStopping(monitor='val_accuracy', patience=2,
-                 min_delta=0.001, restore_best_weights=True),
+    EarlyStopping(monitor='val_loss', patience=2,
+                 min_delta=0.005, restore_best_weights=True),
     ReduceLROnPlateau(monitor='val_loss', factor=0.5,
                      patience=1, min_lr=1e-6)
 ]
@@ -125,7 +138,7 @@ history = model.fit(
     verbose=1
 )
 
-# Save training curves (same format as Bi-LSTM)
+# Visualization (same format)
 plt.figure(figsize=(15, 6))
 
 # Accuracy plot
