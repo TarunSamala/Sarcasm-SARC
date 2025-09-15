@@ -41,7 +41,7 @@ def load_data(file_path, sample_size=100000):
     return df
 
 # Main processing: load the dataset and split into train and test sets.
-df = load_data('../../train-balanced-sarcasm.csv')
+df = load_data('../train-balanced-sarcasm.csv')
 train_texts, test_texts, train_labels, test_labels = train_test_split(
     df['cleaned_comment'], 
     df['label'], 
@@ -160,7 +160,8 @@ plt.figure(figsize=(8, 6))
 cm = confusion_matrix(test_labels, y_pred)
 sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
             xticklabels=['Non-Sarcastic', 'Sarcastic'],
-            yticklabels=['Non-Sarcastic', 'Sarcastic'])
+            yticklabels=['Non-Sarcastic', 'Sarcastic'],
+            annot_kws={"size": 22})
 plt.title('Bi-GRU Confusion Matrix')
 plt.ylabel('True Label')
 plt.xlabel('Predicted Label')
