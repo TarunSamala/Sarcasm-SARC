@@ -14,8 +14,8 @@ from sklearn.utils.class_weight import compute_class_weight
 # Configuration
 MAX_LEN = 50
 BATCH_SIZE = 16
-EPOCHS = 6
-OUTPUT_DIR = "Sarcasm_outputs_bert"
+EPOCHS = 15
+OUTPUT_DIR = "Sarcasm_outputs"
 MODEL_NAME = "distilbert-base-uncased"
 
 # Create output directory
@@ -35,7 +35,7 @@ def load_data(file_path, sample_size=100000):
     return df
 
 # Main processing
-df = load_data('../../train-balanced-sarcasm.csv')
+df = load_data('../train-balanced-sarcasm.csv')
 train_texts, test_texts, train_labels, test_labels = train_test_split(
     df['cleaned_comment'], 
     df['label'], 
@@ -182,11 +182,12 @@ plt.figure(figsize=(8, 6))
 cm = confusion_matrix(test_labels, y_pred)
 sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
            xticklabels=['Non-Sarcastic', 'Sarcastic'],
-           yticklabels=['Non-Sarcastic', 'Sarcastic'])
-plt.title('DistilBERT Confusion Matrix')
-plt.ylabel('True Label')
-plt.xlabel('Predicted Label')
-plt.savefig(os.path.join(OUTPUT_DIR, 'bert_confusion_matrix.png'), dpi=300)
+           yticklabels=['Non-Sarcastic', 'Sarcastic'],
+           annot_kws={"size": 22 })
+plt.title('DistilBERT Confusion Matrix',fontsize=20)
+plt.ylabel('True Label', fontsize=20)
+plt.xlabel('Predicted Label', fontsize=20)
+plt.savefig(os.path.join(OUTPUT_DIR, 'bert_confusion_matrix.png'), dpi=300, bbox_inches='tight')
 plt.close()
 
 print(f"\nAll outputs saved to: {os.path.abspath(OUTPUT_DIR)}")
