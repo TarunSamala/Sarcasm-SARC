@@ -1,9 +1,9 @@
 Hybrid Model Classification Report:
                precision    recall  f1-score   support
 
-Non-Sarcastic       0.71      0.63      0.67     19995
-    Sarcastic       0.67      0.74      0.70     20005
+Non-Sarcastic       0.72      0.63      0.67     19995
+    Sarcastic       0.67      0.75      0.71     20005
 
      accuracy                           0.71     40000
-    macro avg       0.71      0.71      0.70     40000
- weighted avg       0.71      0.71      0.70     40000
+    macro avg       0.71      0.71      0.71     40000
+ weighted avg       0.71      0.71      0.71     40000

@@ -15,7 +15,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 tf.get_logger().setLevel('ERROR')
 
 # Create output directory
-OUTPUT_DIR = 'sarcasm_outputs_hybrid_reddit_fixed'
+OUTPUT_DIR = 'Sarcasm_outputs'
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 def clean_text(text):
@@ -230,12 +230,12 @@ if __name__ == "__main__":
         yticklabels=['Non-Sarcastic', 'Sarcastic'],
         annot_kws={"size": 22}
     )
-    plt.title('Confusion Matrix', fontsize=20)
-    plt.ylabel('True Label', fontsize=20)
-    plt.xlabel('Predicted Label', fontsize=20)
-    plt.xticks(fontsize=20)
-    plt.yticks(fontsize=20)
-    plt.savefig(os.path.join(OUTPUT_DIR, 'confusion_matrix.png'), bbox_inches='tight')
+    plt.title('Confusion Matrix', fontsize=18)
+    plt.ylabel('True Label', fontsize=18)
+    plt.xlabel('Predicted Label', fontsize=18)
+    plt.xticks(fontsize=18)
+    plt.yticks(fontsize=18)
+    plt.savefig(os.path.join(OUTPUT_DIR, 'confusion_matrix.png'), dpi = 300 ,bbox_inches='tight')
     plt.close()
 
     print(f"All results saved to '{os.path.abspath(OUTPUT_DIR)}'")
