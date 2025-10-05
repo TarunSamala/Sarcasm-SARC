@@ -162,7 +162,7 @@ sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
             xticklabels=['Non-Sarcastic', 'Sarcastic'],
             yticklabels=['Non-Sarcastic', 'Sarcastic'],
             annot_kws={"size": 22})
-plt.title('Bi-GRU Confusion Matrix', fontsize=18)
+plt.title('Confusion Matrix', fontsize=18)
 plt.ylabel('True Label', fontsize=18)
 plt.xlabel('Predicted Label', fontsize=18)
 plt.xticks(fontsize=18)
