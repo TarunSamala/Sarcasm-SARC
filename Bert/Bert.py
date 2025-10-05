@@ -163,7 +163,7 @@ plt.grid(linestyle='--', alpha=0.6)
 plt.legend()
 
 plt.tight_layout()
-plt.savefig(os.path.join(OUTPUT_DIR, 'bert_training_curves.png'), dpi=300)
+plt.savefig(os.path.join(OUTPUT_DIR, 'Training_curves.png'), dpi=300)
 plt.close()
 
 # Generate predictions
@@ -173,7 +173,7 @@ y_pred = (raw_preds.logits > 0.5).astype(int)
 # Classification Report
 report = classification_report(test_labels, y_pred, 
                               target_names=['Non-Sarcastic', 'Sarcastic'])
-with open(os.path.join(OUTPUT_DIR, 'bert_classification_report.txt'), 'w') as f:
+with open(os.path.join(OUTPUT_DIR, 'Classification_report.txt'), 'w') as f:
     f.write("DistilBERT Classification Report:\n")
     f.write(report)
 
@@ -184,10 +184,12 @@ sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
            xticklabels=['Non-Sarcastic', 'Sarcastic'],
            yticklabels=['Non-Sarcastic', 'Sarcastic'],
            annot_kws={"size": 22 })
-plt.title('DistilBERT Confusion Matrix',fontsize=20)
-plt.ylabel('True Label', fontsize=20)
-plt.xlabel('Predicted Label', fontsize=20)
-plt.savefig(os.path.join(OUTPUT_DIR, 'bert_confusion_matrix.png'), dpi=300, bbox_inches='tight')
+plt.title('Confusion Matrix',fontsize=18)
+plt.ylabel('True Label', fontsize=18)
+plt.xlabel('Predicted Label', fontsize=18)
+plt.xticks(fontsize=18)
+plt.yticks(fontsize=18)
+plt.savefig(os.path.join(OUTPUT_DIR, 'Confusion_matrix.png'), dpi=300, bbox_inches='tight')
 plt.close()
 
 print(f"\nAll outputs saved to: {os.path.abspath(OUTPUT_DIR)}")
